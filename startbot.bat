@@ -9,9 +9,9 @@ if not exist "venv" (
     echo Creating virtual environment...
     python -m venv venv
 
-    :: Install dependencies
-    echo Installing dependencies from requirements.txt...
-    pip install -r requirements.txt
+   :: Use venv's Python to install dependencies
+   echo Installing dependencies from requirements.txt...
+   venv\Scripts\python.exe -m pip install -r requirements.txt
 )
 
 :: Activate virtual environment
