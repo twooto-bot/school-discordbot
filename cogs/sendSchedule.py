@@ -2,39 +2,63 @@ from discord.ext import commands
 from discord.commands import slash_command
 import discord
 import json
+from datetime import datetime, date
 
-class send_scedule(commands.Cog):
+class send_schedule(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="send_schedule", description="send the schedule embed into channel")
+    @slash_command(name="send_schedule", description="Send the schedule embed into channel")
     async def set(self, ctx):
+        today = date.today()
         
         print(f"SendSchedule has been executed by: {ctx.author}")
-        
+        await ctx.respond("Sending schedule ...", ephemeral=True)
+
+        # Load tasks safely
         try:
-            with open("tasks.json") as file:
+            with open("tasks.json", "r") as file:
                 config = json.load(file)
-            
+                
                 if not config:
-                    await ctx.respond("Er zijn nog geen taken om te verstuuren", ephemeral=True)
+                    await ctx.respond("Er zijn nog geen taken om te versturen", ephemeral=True)
                     return
             
-        except FileNotFoundError:
-            print("config was not found")
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("⚠️ tasks.json was not found or is invalid")
+            await ctx.respond("Geen taken gevonden.", ephemeral=True)
+            return
 
-        embed = discord.Embed(
-            title="graduaat programmeren schedule",
-        )
+        # Remove outdated tasks safely
+        keys_to_remove = []
+        for time_str in config:
+            try:
+                task_date = datetime.strptime(time_str, "%d-%m-%Y").date()
+                if task_date < today:
+                    keys_to_remove.append(time_str)
+            except ValueError:
+                print(f"⚠️ Invalid date in tasks.json: {time_str}, skipping...")
 
-        for time, tasks in config.items():
-            embed.add_field(name=f"Datum: {time}", value="", inline=False)
+        for key in keys_to_remove:
+            tasks = config[key]
+            del config[key]
+            print(f"Removed {key}: {tasks}")
+
+        # Save updated tasks
+        with open("tasks.json", "w") as file:
+            json.dump(config, file, indent=4)
+
+        # Build the embed
+        embed = discord.Embed(title="Graduaat Programmeren Schedule")
+
+        for time_str, tasks in config.items():
+
+            embed.add_field(name=f"Datum: {time_str}", value="", inline=False)
             for task in tasks:
-                print(time, task)
                 embed.add_field(name="", value=f"```{task}```", inline=False)
 
         await ctx.send(embed=embed)
 
- 
+
 def setup(bot):
-    bot.add_cog(send_scedule(bot))
+    bot.add_cog(send_schedule(bot))

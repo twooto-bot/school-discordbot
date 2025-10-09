@@ -8,14 +8,14 @@ echo ==========================================
 if not exist "venv" (
     echo Creating virtual environment...
     python -m venv venv
+
+    :: Install dependencies
+    echo Installing dependencies from requirements.txt...
+    pip install -r requirements.txt
 )
 
 :: Activate virtual environment
 call venv\Scripts\activate
-
-:: Install dependencies
-echo Installing dependencies from requirements.txt...
-pip install -r requirements.txt
 
 :: Run the bot (replace index.py with your main file)
 echo Running bot...

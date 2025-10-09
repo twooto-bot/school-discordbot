@@ -1,5 +1,6 @@
 from discord.ext import commands
 from discord.commands import slash_command
+from discord import option
 from datetime import datetime
 import json
 
@@ -8,6 +9,8 @@ class new_task(commands.Cog):
         self.bot = bot
 
     @slash_command(name="new_task", description="Voeg een nieuwe taak toe aan de lijst")
+    @option("task", description="Wat is de taak die je wilt toevoegen?")
+    @option("time", description="Datum in dit formaat: dd-mm-jjjj (bijv. 05-10-2025)")
     async def set(self, ctx, task, time):
         
         print(f"AddNewTask has been executed by: {ctx.author}")

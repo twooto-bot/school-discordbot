@@ -22,6 +22,10 @@ bot = discord.Bot(intents=intents)
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(
+        activity=discord.Activity(type=discord.ActivityType.listening, name="Vives students 🎓"),
+        status=discord.Status.online
+        )
     print(f"Loged in as {bot.user}")
     
 
