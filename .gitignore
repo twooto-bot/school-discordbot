@@ -1,0 +1,4 @@
+config.json
+/venv
+/cogs/__pycache__
+tasks.json

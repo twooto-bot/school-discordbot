@@ -9,6 +9,9 @@ class send_scedule(commands.Cog):
 
     @slash_command(name="send_schedule", description="send the schedule embed into channel")
     async def set(self, ctx):
+        
+        print(f"SendSchedule has been executed by: {ctx.author}")
+        
         try:
             with open("tasks.json") as file:
                 config = json.load(file)
@@ -28,7 +31,7 @@ class send_scedule(commands.Cog):
             embed.add_field(name=f"Datum: {time}", value="", inline=False)
             for task in tasks:
                 print(time, task)
-                embed.add_field(name="", value=f"``` {task}```", inline=False)
+                embed.add_field(name="", value=f"```{task}```", inline=False)
 
         await ctx.send(embed=embed)
 
