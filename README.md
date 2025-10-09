@@ -53,6 +53,9 @@ git clone https://github.com/twooto-bot/school-discordbot.git
 
 2. Run the .bat file to get started.
 
+```
+---
+
 ## 📌 GitHub
 
 Check out the GitHub Repository
