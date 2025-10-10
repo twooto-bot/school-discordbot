@@ -31,13 +31,14 @@ class send_schedule(commands.Cog):
 
         # Remove outdated tasks safely
         keys_to_remove = []
-        for time_str in config:
-            try:
-                task_date = datetime.strptime(time_str, "%d-%m-%Y").date()
-                if task_date < today:
-                    keys_to_remove.append(time_str)
-            except ValueError:
-                print(f"⚠️ Invalid date in tasks.json: {time_str}, skipping...")
+        for group, dates in config.items():  
+            for time_str in dates:
+                try:
+                    task_date = datetime.strptime(time_str, "%d-%m-%Y").date()
+                    if task_date < today:
+                        keys_to_remove.append(time_str)
+                except ValueError:
+                    print(f"⚠️ Invalid date in tasks.json: {time_str}, skipping...")
 
         for key in keys_to_remove:
             tasks = config[key]
@@ -48,16 +49,21 @@ class send_schedule(commands.Cog):
         with open("tasks.json", "w") as file:
             json.dump(config, file, indent=4)
 
-        # Build the embed
-        embed = discord.Embed(title="Graduaat Programmeren Schedule")
 
-        for time_str, tasks in config.items():
 
-            embed.add_field(name=f"Datum: {time_str}", value="", inline=False)
-            for task in tasks:
-                embed.add_field(name="", value=f"```{task}```", inline=False)
+        for group, dates in config.items():
 
-        await ctx.send(embed=embed)
+            # Build the embed
+            embed = discord.Embed(title=f"Graduaat Programmeren Schedule for {group}")
+
+            for time_str, tasks in dates.items():
+
+                embed.add_field(name=f"Datum: {time_str}", value="", inline=False)
+                for task in tasks:
+                    embed.add_field(name="", value=f"```{task}```", inline=False)
+            
+            await ctx.send(embed=embed)
+
 
 
 def setup(bot):
