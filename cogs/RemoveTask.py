@@ -4,19 +4,19 @@ from discord.commands import slash_command
 from datetime import datetime
 import json
 
-class new_task(commands.Cog):
+class remove_task(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="new_task", description="Voeg een nieuwe taak toe aan de lijst")
-    @option("task", description="Wat is de taak die je wilt toevoegen?")
+    @slash_command(name="remove_task", description="Verwijder een taak in de lijst")
+    @option("task", description="Wat is de taak die je wilt verwijderen?")
     @option("time", description="Datum in dit formaat: dd-mm-jjjj (bijv. 05-10-2025)")
     @option("group",
-        description="Voor welke groep is deze taak?",
+        description="in welke groep is deze taak",
         choices=["GroepA", "GroepB"])
-    async def new_task(self, ctx, task, time, group):
+    async def remove_task(self, ctx, task, time, group):
         
-        print(f"AddNewTask has been executed by: {ctx.author}")
+        print(f"RemoveTask has been executed by: {ctx.author}")
         
         try:
             parsed_date  = datetime.strptime(time, "%d-%m-%Y")
@@ -31,28 +31,21 @@ class new_task(commands.Cog):
         except (FileNotFoundError, json.JSONDecodeError):
             config = {}  
 
-        # Zorg dat de groep en datum bestaan
-        if group not in config:
-            config[group] = {}
-
-        if valid_date not in config[group]:
-            config[group][valid_date] = []
-
-        # Voeg de taak toe
-        config[group][valid_date].append(task)
-
-        # Sorteer de data per groep op datum
-        for groep in config:
-            config[groep] = dict(sorted(
-                config[groep].items(),
-                key=lambda item: datetime.strptime(item[0], "%d-%m-%Y")
-            ))
+        try:
+            if len(config[group][valid_date]) == 1:
+                del config[group][valid_date]
+            else:
+                config[group][valid_date].remove(task)
+        except KeyError as e:
+            print(f"Key not found in Json error: {e}")
+            await ctx.respond("Please enter a valid task! if its still not working contact <@1192033363725402136>")
+            return
 
         # Sla de data opnieuw op
         with open("tasks.json", "w") as file:
             json.dump(config, file, indent=4)
 
-        await ctx.respond(f"{task} has been added with the date {time}", ephemeral=True)
+        await ctx.respond(f"{task} has been removed", ephemeral=True)
         
 def setup(bot):
-    bot.add_cog(new_task(bot))
+    bot.add_cog(remove_task(bot))

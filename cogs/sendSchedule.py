@@ -1,15 +1,15 @@
+import discord
 from discord.ext import commands
 from discord.commands import slash_command
-import discord
-import json
 from datetime import datetime, date
+import json
 
 class send_schedule(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @slash_command(name="send_schedule", description="Send the schedule embed into channel")
-    async def set(self, ctx):
+    async def send_schedule(self, ctx):
         today = date.today()
         
         print(f"SendSchedule has been executed by: {ctx.author}")
@@ -53,14 +53,21 @@ class send_schedule(commands.Cog):
 
         for group, dates in config.items():
 
+            if group == "GroepA":
+                color = 0xED4245  # Red
+            else:
+                color = 0x5865F2  # Blue
+
             # Build the embed
-            embed = discord.Embed(title=f"Graduaat Programmeren Schedule for {group}")
+            embed = discord.Embed(title=f"Graduaat Programmeren Schedule for {group}", color=color)
 
             for time_str, tasks in dates.items():
 
                 embed.add_field(name=f"Datum: {time_str}", value="", inline=False)
                 for task in tasks:
                     embed.add_field(name="", value=f"```{task}```", inline=False)
+                
+            embed.set_footer(text=f"Vives students bot hosted by twooto, command executed by {ctx.author}")
             
             await ctx.send(embed=embed)
 

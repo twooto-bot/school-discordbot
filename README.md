@@ -28,7 +28,9 @@ Here’s how the schedule looks in Discord:
 ## 📝 Commands
 
 ### Add a Task
-/new_task task:<task name> time:<date in dd-mm-yyyy format>
+/new_task task:<task name> time:<date in dd-mm-yyyy format> group:<groep options:GroupA, GroupB>
+/remove_task task:<task name> time:<date in dd-mm-yyyy format> group:<groep options:GroupA, GroupB>
+
 /send_schedule
 
 This will update the schedule embed with all new tasks and remove past tasks automatically.
