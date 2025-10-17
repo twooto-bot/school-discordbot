@@ -29,6 +29,7 @@ Here’s how the schedule looks in Discord:
 
 ### Add a Task
 /new_task task:<task name> time:<date in dd-mm-yyyy format> group:<groep options:GroupA, GroupB>
+
 /remove_task task:<task name> time:<date in dd-mm-yyyy format> group:<groep options:GroupA, GroupB>
 
 /send_schedule

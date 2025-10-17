@@ -28,6 +28,7 @@ class remove_task(commands.Cog):
         try:
             with open("tasks.json", "r") as file:
                 config = json.load(file)
+                
         except (FileNotFoundError, json.JSONDecodeError):
             config = {}  
 
@@ -36,6 +37,7 @@ class remove_task(commands.Cog):
                 del config[group][valid_date]
             else:
                 config[group][valid_date].remove(task)
+
         except KeyError as e:
             print(f"Key not found in Json error: {e}")
             await ctx.respond("Please enter a valid task! if its still not working contact <@1192033363725402136>")

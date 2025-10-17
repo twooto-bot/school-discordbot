@@ -30,20 +30,22 @@ class send_schedule(commands.Cog):
             return
 
         # Remove outdated tasks safely
-        keys_to_remove = []
-        for group, dates in config.items():  
-            for time_str in dates:
+        keys_to_remove = {}
+
+        for group_name, dates in config.items():
+            for time_str in list(dates.keys()):
                 try:
                     task_date = datetime.strptime(time_str, "%d-%m-%Y").date()
                     if task_date < today:
-                        keys_to_remove.append(time_str)
+                        # Collect keys to remove per group
+                        keys_to_remove.setdefault(group_name, []).append(time_str)
                 except ValueError:
                     print(f"⚠️ Invalid date in tasks.json: {time_str}, skipping...")
 
-        for key in keys_to_remove:
-            tasks = config[key]
-            del config[key]
-            print(f"Removed {key}: {tasks}")
+        for group_name, keys in keys_to_remove.items():
+            for key in keys:
+                removed_tasks = config[group_name].pop(key, None)
+                print(f"Removed {key} from {group_name}: {removed_tasks}")
 
         # Save updated tasks
         with open("tasks.json", "w") as file:
